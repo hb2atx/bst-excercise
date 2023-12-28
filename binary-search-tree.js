@@ -11,6 +11,14 @@ class BinarySearchTree {
     this.root = root;
   }
 
+    /** dfsInOrder(): Traverse the array using in-order DFS.
+   * Return an array of visited nodes. */
+
+    _dfsInOrder(){
+    
+    }
+  
+
   /** insert(val): insert a new node into the BST with value val.
    * Returns the tree. Uses iteration. */
 
@@ -88,7 +96,7 @@ class BinarySearchTree {
       return this._findNode(this.root, val);
     }
 
-    .findNode(node, val) {
+    _findNode(node, val) {
       if (node === null) {
         return undefined;
       }
@@ -119,27 +127,56 @@ class BinarySearchTree {
       this._dfsPreOrderHelper(node.right, visited); // Traverse right subtree
     }
   }
-}
+
 
   /** dfsInOrder(): Traverse the array using in-order DFS.
    * Return an array of visited nodes. */
 
-  dfsInOrder() {
-
+ _dfsInOrder(node = this.root, visited = []) {
+  if (node !== null) {
+    this._dfsInOrder(node.left, visited);
+    visited.push(node.val);
+    this._dfsInOrder(node.right, visited);
   }
+  return visited;
+}
+  
 
   /** dfsPostOrder(): Traverse the array using post-order DFS.
    * Return an array of visited nodes. */
 
-  dfsPostOrder() {
-
+  dfsPostOrder(node = this.root, visited = []) {
+    if (node !== null) {
+      this._dfsPreOrderHelper(node.left, visited);
+      this._dfsPreOrderHelper(node.right, visited);
+      visited .push(node.val);
+    }
+    return visited;
   }
 
   /** bfs(): Traverse the array using BFS.
    * Return an array of visited nodes. */
 
   bfs() {
+    const result = [];
+    const queue = [];
 
+    if(this.root !== null){
+      queue.push(this.root);
+
+      while (queue.length > 0){
+        const currentNode = queue.shift();
+        result.push(currentNode.val);
+
+        if(currentNode.left !== null){
+          queue.push(currentNode.left);
+        }
+        if(currentNode.right !== null) {
+          queue.push(currentNode.right);
+        }
+      }
+    }
+    return result;
   }
 
   /** Further Study!
@@ -171,16 +208,55 @@ class BinarySearchTree {
   /** Further Study!
    * isBalanced(): Returns true if the BST is balanced, false otherwise. */
 
-  isBalanced() {
-
+  isBalanced(node = this.root) {
+    if (node === null) {
+      return true;
+    }
+  
+    const leftHeight = this.getHeight(node.left);
+    const rightHeight = this.getHeight(node.right);
+  
+    return (
+      Math.abs(leftHeight - rightHeight) <= 1 &&
+      this.isBalanced(node.left) &&
+      this.isBalanced(node.right)
+    );
   }
+  
+  getHeight(node) {
+    if (node === null) {
+      return 0;
+    }
+  
+    const leftHeight = this.getHeight(node.left);
+    const rightHeight = this.getHeight(node.right);
+  
+    return Math.max(leftHeight, rightHeight) + 1;
+  }
+  
 
   /** Further Study!
    * findSecondHighest(): Find the second highest value in the BST, if it exists.
    * Otherwise return undefined. */
 
   findSecondHighest() {
-    
+    let secondHighest = undefined;
+
+    // Start from the root of the tree
+    let current = this.root;
+
+    while (current !== null) {
+      // If the current node has a right child but doesn't have a right child's right child
+      if (current.right !== null && current.right.right === null) {
+        secondHighest = current.val; // The current node is the second-highest
+        break;
+      }
+
+      // Move to the right child
+      current = current.right;
+    }
+
+    return secondHighest;
   }
 }
 
